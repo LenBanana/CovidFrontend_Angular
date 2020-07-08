@@ -1,0 +1,9 @@
+.cover {
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba($color: #222222, $alpha: 0.5);
+    width: 100vw;
+    height: 100vw;
+}

@@ -1,0 +1,7 @@
+<div *ngIf="!currentHtml.length>0">
+    <p class="center"><i class="fas fa-circle-notch fa-5x spin mt-5 text-info"></i></p>
+</div>
+<div *ngIf="currentHtml.length>0" id="table-wrapper{{uniqueId}}" class="dynTableWrap mt-2">
+    <div [innerHTML]="currentHtml" class="dynTable">
+    </div>
+</div>

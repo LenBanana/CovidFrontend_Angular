@@ -1,0 +1,47 @@
+<router-outlet></router-outlet>
+<div *ngIf="!configs">
+    <h2 class="text-center text-light">Please wait, data is loading...</h2>
+    <i class="fas fa-spinner" class="spin"></i>
+</div>
+<div class="container-fluid d-flex h-100 flex-column">
+    <div class="row mt-5 h-100 flex-grow-1" style="display:flex;">
+        <div class="col-lg-3 col-md-3 col-sm-12 taller float-left">
+            <app-general-info *ngIf="data" [data]="data"></app-general-info>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-12 float-right">
+            <app-search-bar *ngIf="configs" [configs]="configs" (data)="data=$event;currentQueue=0;" (config)="config=$event">
+            </app-search-bar>
+            <div *ngIf="data" class="card bg-dark text-light shadow mt-2">
+                <div class="card-header">
+                    <h4>{{currentTitle}}</h4>
+                </div>
+                <div class="card-body">
+                    <app-basic-plot [dataPoints]="[data.dataPoints]" [pie]="!data.config.iso_code"></app-basic-plot>
+                </div>
+            </div>
+            <div *ngIf="data" class="pl-5 mt-2 py-3 bg-dark text-light shadow">
+                <div class="row text-center">
+                    <button class="btn btn-primary mr-3" [disabled]="currentQueue===0" (click)="GetData(0)">Cases</button>
+                    <button class="btn btn-primary mr-3" [disabled]="currentQueue===1" (click)="GetData(1)">Deaths</button>
+                    <button class="btn btn-primary mr-3" [disabled]="currentQueue===2" (click)="GetData(2)">New cases</button>
+                    <button class="btn btn-primary mr-3" [disabled]="currentQueue===3" (click)="GetData(3)">New deaths</button>
+                    <button class="btn btn-primary mr-3" [disabled]="currentQueue===4" (click)="GetData(4)">New tests</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="data&&config" class="col-sm-12 col-md-12 my-5 card bg-dark text-light shadow">
+        <div class="card-header">
+            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addSourceModal"><i class="fas fa-plus-circle"></i> Add source</button>
+        </div>
+        <div class="card-body" *ngIf="data.info">
+            <div *ngFor="let source of config.addedSources; let i = index;" class="mb-4">
+                <button type="button" class="btn btn-light" data-toggle="collapse" [attr.data-target]="'#info' + i"><i class="fas fa-table"></i> {{source.source}}</button>
+                <div id="info{{i}}" class="collapse">
+                    <app-added-source [source]="source" (newSource)="data.dataPoints=$event" (newTitle)="currentTitle=$event" [uniqueId]="i.toString()"></app-added-source>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-source-add-modal></app-source-add-modal>

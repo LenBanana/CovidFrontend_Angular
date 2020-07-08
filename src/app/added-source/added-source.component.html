@@ -1,0 +1,27 @@
+<div class="row mt-4">
+    <div class="col-md-6 col-sm-6">
+        <button class="btn btn-warning" (click)="addFilter()">Add filter</button>
+        <div *ngFor="let filter of [].constructor(allFilter.length); let i = index;">
+            <app-filter-field [filterCaptionOptions]="filterCaptionOptions" [uniqueId]="allFilter[i].filterId" [source]="source" (filter)="filterValues($event);"></app-filter-field>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <p class="text-light mt-2">Caption</p>
+                <select id="cap-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedCaption" (ngModelChange)="onChangeCap($event)"> 
+                </select>
+            </div>
+            <div class="col-6">
+                <p class="text-light mt-2">Value</p>
+                <select id="data-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedValue" (ngModelChange)="onChangeVal($event)"> 
+                </select>
+            </div>
+            <!--<div class="col-4">
+                <p class="text-light mt-2">Draw to chart</p>
+                <i class="fas fa-chart-bar text-success" style="font-size: 35px; cursor: pointer;" (click)="emitSource()"></i>
+            </div>-->
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <app-dynamic-table [uniqueId]="uniqueId" [source]="filteredSource"></app-dynamic-table>
+    </div>
+</div>

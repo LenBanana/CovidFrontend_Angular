@@ -1,0 +1,23 @@
+<div class="modal fade" id="addSourceModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h4 class="modal-title">Add additional source</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>URL to .csv file</p>
+                <input class="form-control bg-dark text-light" [ngModel]="url" (ngModelChange)="onChangeUrl($event)" placeholder="https://*.csv">
+                <p class="text-center"><i *ngIf="loading" class="fas fa-spinner fa-3x spin mt-5 text-info"></i></p>
+                <div *ngIf="newSource">
+                    <app-dynamic-table [uniqueId]="1337" [source]="newSource"></app-dynamic-table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" (click)="sendSource()" *ngIf="!newSource" [disabled]="!url || url.length <= 10|| !url.startsWith('http')"><i class="fas fa-share"></i> Send request</button>
+                <button class="btn btn-danger mr-5" *ngIf="newSource" (click)="newSource=null"><i class="fas fa-times-circle"></i> Discard</button>
+                <button class="btn btn-success" *ngIf="newSource"><i class="fas fa-check-circle"></i> Looks good</button>
+            </div>
+        </div>
+    </div>
+</div>

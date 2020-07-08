@@ -1,0 +1,8 @@
+<select class="form-control bg-dark text-light shadow" [ngModel]="selectedDeviceObj" (ngModelChange)="onChangeObj($event)" name="selcountry" title="">
+    <option [ngValue]="config" *ngFor="let config of configs">{{config.location}} - {{config.iso_code}}</option>
+</select>
+<p class="text-light" style="font-size: 10px;">* Each country listed has at least one dataset available. Additionally added sets will be displayed as tables at the bottom of this page. Use keyboard while list is extended to filter for a country</p>
+
+<div class="cover" *ngIf="loading">
+    <p class="center"><i class="fas fa-circle-notch fa-5x spin mt-5 text-info"></i></p>
+</div>

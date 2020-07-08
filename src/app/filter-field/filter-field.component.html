@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-6">
+        <p class="text-light">Caption to filter</p>
+        <select id="cap-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedCaptionFilter" (ngModelChange)="onChangeCaptionFilter($event)"> 
+        </select>
+    </div>
+    <div class="col-6">
+        <p class="text-light">Filter</p>
+        <select id="filter-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedFilter" (ngModelChange)="onChangeFilter($event)"> 
+        </select>
+    </div>
+</div>

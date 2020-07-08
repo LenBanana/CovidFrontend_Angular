@@ -1,0 +1,58 @@
+.dynTableWrap {
+    position: relative;
+}
+
+.dynTable {
+    max-height: 550px;
+    overflow: auto;
+    border: 1px solid #f8f9fa;
+}
+
+.dynTableWrap table {
+    width: 100vw;
+    table-layout: fixed;
+}
+
+td {
+    word-wrap: break-word
+}
+
+th {
+    word-wrap: break-word
+}
+
+.dynTableWrap table * {
+    background: yellow;
+    color: black;
+}
+
+.dynTableWrap table thead th .text {
+    position: absolute;
+    top: -20px;
+    z-index: 2;
+    height: 20px;
+    width: 35%;
+    border: 1px solid red;
+}
+
+.dynTable thead th {
+    position: sticky;
+    top: 0;
+}
+
+
+/* Just common table stuff. Really. */
+
+.dynTable table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.dynTable th,
+td {
+    padding: 8px 16px;
+}
+
+.dynTable th {
+    background: #eee;
+}

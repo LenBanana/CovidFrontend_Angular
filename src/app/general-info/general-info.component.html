@@ -1,0 +1,83 @@
+<div class="card bg-dark text-light shadow">
+    <div class="card-header">
+        <h3 *ngIf="data.config.location">Data for {{data.config.location}} - {{data.config.continent}}</h3>
+        <h3 *ngIf="!data.config.location">Data for World</h3>
+    </div>
+    <div class="card-body" *ngIf="data.info">
+        <h3><span class="badge badge-primary badge-pill badge-danger my-3">Cases and deaths</span></h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Total confirmed cases of COVID-19">
+                Total cases | (per million)
+                <h5><span class="badge badge-primary badge-info">{{data.info.cases}}</span><span class="badge badge-primary badge-info ml-1">{{data.info.casesPerMillion}}</span></h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Total deaths attributed to COVID-19">
+                Total deaths | (per million)
+                <h5><span class="badge badge-primary badge-info">{{data.info.deaths}}</span><span class="badge badge-primary badge-info ml-1">{{data.info.deathsPerMillion}}</span></h5>
+            </li>
+            <!--<li class="list-group-item bg-dark d-flex justify-content-between align-items-center">
+                            Deathrate
+                            <h5><span class="badge badge-primary badge-info">{{data.info.deathrate}}</span></h5>
+                        </li>-->
+        </ul>
+        <h3><span class="badge badge-primary badge-pill badge-primary my-3">Tests</span></h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Total tests for COVID-19 | Tests for COVID-19 per 1,000 people">
+                Tests | (per thousand)
+                <h5><span class="badge badge-primary badge-info">{{data.info.tests}}</span><span class="badge badge-primary badge-info ml-1">{{data.info.testsPerThousand}}</span></h5>
+            </li>
+        </ul>
+        <h3><span class="badge badge-primary badge-pill badge-warning my-3">Population</span></h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Population in 2020 | Number of people divided by land area, measured in square kilometers, most recent year available">
+                Population | (density)
+                <h5><span class="badge badge-primary badge-info">{{data.info.population}}</span><span class="badge badge-primary badge-info ml-1">{{data.info.populationDensity}}</span></h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Life expectancy at birth in 2019 | Median age of the population, UN projection for 2020">
+                Life expectancy | Median age
+                <h5><span class="badge badge-primary badge-info">{{data.info.lifeExpectancy}}y</span><span class="badge badge-primary badge-info ml-1">{{data.info.medianAge}}y</span></h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Share of the population that is 65 years and older, most recent year available | Share of the population that is 70 years and older in 2015">
+                Aged over 65y | 70y
+                <h5><span class="badge badge-primary badge-info">{{data.info.agedOver65}}%</span><span class="badge badge-primary badge-info ml-1">{{data.info.agedOver70}}%</span></h5>
+            </li>
+        </ul>
+        <h3><span class="badge badge-primary badge-pill badge-success my-3">General info</span></h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Gross domestic product at purchasing power parity (constant 2011 international dollars), most recent year available">
+                GDP per capita
+                <h5><span class="badge badge-primary badge-info">{{data.info.gdpPerCapita}}</span></h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Share of the population living in extreme poverty, most recent year available since 2010">
+                Poverty rate
+                <h5>
+                    <span class="badge badge-primary badge-info ml-1">
+                        <span *ngIf="data.info.poverty">{{data.info.poverty}}%</span>
+                    <span *ngIf="!data.info.poverty">No value reported yet</span>
+                    </span>
+                </h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Share of women who smoke, most recent year available | Share of men who smoke, most recent year available">
+                Smokers Female | Male
+                <div *ngIf="!data.info.femaleSmokers||!data.info.maleSmokers">
+                    <h5><span class="badge badge-primary badge-info">No value reported yet</span></h5>
+                </div>
+                <div *ngIf="data.info.femaleSmokers&&data.info.maleSmokers">
+                    <h5><span class="badge badge-primary badge-info">{{data.info.femaleSmokers}}%</span><span class="badge badge-primary badge-info ml-1">{{data.info.maleSmokers}}%</span></h5>
+                </div>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Diabetes prevalence (% of population aged 20 to 79) in 2017">
+                Diabetes prevalence
+                <h5><span class="badge badge-primary badge-info">{{data.info.diabetesPrevalence}}%</span></h5>
+            </li>
+            <li class="list-group-item bg-dark d-flex justify-content-between align-items-center" title="Hospital beds per 1,000 people, most recent year available since 2010">
+                Hospital beds per thousand
+                <h5>
+                    <span class="badge badge-primary badge-info ml-1">
+                        <span *ngIf="data.info.hospitalBedsPerThousand">{{data.info.hospitalBedsPerThousand}}</span>
+                    <span *ngIf="!data.info.hospitalBedsPerThousand">No value reported yet</span>
+                    </span>
+                </h5>
+            </li>
+        </ul>
+    </div>
+</div>
