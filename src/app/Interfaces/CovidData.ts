@@ -39,8 +39,12 @@ export interface DataPoint {
   value: number;
 }
 
+export interface DataPointFilter extends DataPoint {
+  selected: boolean;
+}
+
 export interface CovidData {
   config: Config;
   info: Info;
-  dataPoints: DataPoint[];
+  dataPoints: DataPointFilter[];
 }

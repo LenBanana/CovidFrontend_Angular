@@ -45,4 +45,14 @@ export class DataServiceService {
   public GetCSVModel(url: string) {
     return this.http.get<AddedSource>(baseUrl + 'CovidDataPoints/GetCSVModel/?url=' + url);
   }
+
+  public SaveCSVModel(url: string, iso_code: string, location: string) {
+    return this.http.post(baseUrl + 'CovidDataPoints/SaveCSV/?url=' + url + '&iso_code=' + iso_code + '&location=' + location, "");
+  }
+
+  public uploadFile(fileToUpload: File) {
+    const _formData = new FormData();
+    _formData.append('file', fileToUpload, fileToUpload.name);   
+    return this.http.post(baseUrl + 'CovidDataPoints/PostCSVFile/', _formData);
+  }
 }

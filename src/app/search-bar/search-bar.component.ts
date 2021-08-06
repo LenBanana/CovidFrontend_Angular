@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from '@angular/core';
 import { DataServiceService } from '../services/data-service.service';
 import { Config } from '../Interfaces/CovidData';
 
@@ -7,7 +7,7 @@ import { Config } from '../Interfaces/CovidData';
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.scss']
 })
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent implements OnChanges {
 
   constructor(public dataservice: DataServiceService) { }
   @Output() data = new EventEmitter();
@@ -15,7 +15,8 @@ export class SearchBarComponent implements OnInit {
   @Input() configs: Config[];
   selectedDeviceObj: Config;
   loading = false;
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.configs = this.configs.slice(0, this.configs.length-2).sort((a,b) => (a.location > b.location) ? 1 : ((b.location > a.location) ? -1 : 0));
   }
   
   onChangeObj(newObj) {

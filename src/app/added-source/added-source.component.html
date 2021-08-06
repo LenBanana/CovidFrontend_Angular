@@ -1,24 +1,32 @@
 <div class="row mt-4">
-    <div class="col-md-6 col-sm-6">
-        <button class="btn btn-warning" (click)="addFilter()">Add filter</button>
-        <div *ngFor="let filter of [].constructor(allFilter.length); let i = index;">
-            <app-filter-field [filterCaptionOptions]="filterCaptionOptions" [uniqueId]="allFilter[i].filterId" [source]="source" (filter)="filterValues($event);"></app-filter-field>
+    <div class="col-md-12 col-sm-12 card-body border-top border-left border-right border-secondary shadow rounded-top mx-3">
+        <h5>Functions<i class="fas fa-brain float-right"></i>
+            <p class="text-light" style="font-size: 10px;">* Execution order effects the results</p>
+        </h5>
+        <div class="row border-top border-secondary">
+            <div class="col-12 mt-3">
+                <div class="mb-4 ml-1">
+                    <button class="btn btn-warning" (click)="addFilter(0)"><i class="fas fa-filter"></i> Filter</button>
+                    <button class="btn btn-warning ml-2" (click)="addFilter(1)"><i class="fas fa-bezier-curve"></i> Aggregation</button>
+                    <button class="btn btn-warning ml-2" (click)="addFilter(2)"><i class="fas fa-divide"></i> Calculation</button>
+                </div>
+                <div *ngFor="let filter of allFilter; let i = index;trackBy: trackByFn; let first = first; let last = last;">
+                    <app-filter-field [filterCaptionOptions]="filterCaptionOptions" [currentFilter]="filter" [first]="first" [last]="last" [source]="source" (filter)="filterValues($event);" (move)="moveFilter($event)"></app-filter-field>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-6">
-                <p class="text-light mt-2">Caption</p>
+        <h5>Draw<i class="far fa-chart-bar float-right"></i></h5>
+        <div class="row border-top border-secondary pb-3">
+            <div class="col-6 mt-2">
+                <p class="text-light">Column</p>
                 <select id="cap-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedCaption" (ngModelChange)="onChangeCap($event)"> 
                 </select>
             </div>
-            <div class="col-6">
-                <p class="text-light mt-2">Value</p>
+            <div class="col-6 mt-2">
+                <p class="text-light">Value</p>
                 <select id="data-slct{{uniqueId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedValue" (ngModelChange)="onChangeVal($event)"> 
                 </select>
             </div>
-            <!--<div class="col-4">
-                <p class="text-light mt-2">Draw to chart</p>
-                <i class="fas fa-chart-bar text-success" style="font-size: 35px; cursor: pointer;" (click)="emitSource()"></i>
-            </div>-->
         </div>
     </div>
     <div class="col-md-12 col-sm-12">

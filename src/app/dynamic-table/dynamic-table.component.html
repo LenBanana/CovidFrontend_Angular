@@ -1,7 +1,14 @@
-<div *ngIf="!currentHtml.length>0">
+<div *ngIf="currentHtml.length===0">
     <p class="center"><i class="fas fa-circle-notch fa-5x spin mt-5 text-info"></i></p>
 </div>
-<div *ngIf="currentHtml.length>0" id="table-wrapper{{uniqueId}}" class="dynTableWrap mt-2">
-    <div [innerHTML]="currentHtml" class="dynTable">
+<div *ngIf="!(currentHtml.length===0)" id="table-wrapper{{uniqueId}}" class="dynTableWrap border-left border-right border-bottom border-secondary rounded-top">
+    <div [innerHTML]="currentHtml | sanitizer" class="dynTable">
+    </div>
+    <div *ngIf="recordCount>1" class="row float-right mt-2">
+        <button class="btn btn-primary mr-2" (click)="currentStart=(0)"><i class="fas fa-caret-left"></i></button>
+        <div *ngFor="let record of [].constructor(recordCount); let i = index;">
+            <button *ngIf="((currentStart + 100) / 100) < (i+4) && ((currentStart + 100) / 100) > (i-4)" class="btn btn-primary mr-2" [disabled]="((currentStart + 100) / 100) === (i+1)" (click)="currentStart=(i*100); BuildTable();">{{i+1}}</button>
+        </div>
+        <button class="btn btn-primary mr-2" (click)="currentStart=(recordCount*100)"><i class="fas fa-caret-right"></i></button>
     </div>
 </div>

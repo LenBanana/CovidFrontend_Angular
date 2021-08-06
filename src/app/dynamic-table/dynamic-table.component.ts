@@ -11,14 +11,20 @@ export class DynamicTableComponent implements OnChanges {
   @Input() source: AddedSource;
   @Input() uniqueId: string;
   currentHtml = "";
+  currentStart = 0;
+  recordCount = 0;
   constructor() { }
 
   ngOnChanges(): void {     
-      this.currentHtml = this.BuildTable();
+    this.currentStart = 0;
+      this.BuildTable();
   }
 
-  BuildTable(): string {    
-    var rows = JSON.parse(JSON.stringify(this.source.value)); 
+  BuildTable() {    
+    const records = this.source.value as object[];
+    this.recordCount = Math.ceil(records.length / 100);
+    const data = records.slice(this.currentStart, this.currentStart + 100);
+    var rows = JSON.parse(JSON.stringify(data)); 
     var html = '<table class="table table-dark table-striped">';
     html += '<thead><tr>';
     for (var j in rows[0]) {
@@ -34,7 +40,7 @@ export class DynamicTableComponent implements OnChanges {
       html += '</tr>';
     }
     html += '<tbody></table>';
-    return html;
+    this.currentHtml = html;
   }
 
 }

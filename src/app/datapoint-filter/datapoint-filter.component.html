@@ -1,0 +1,82 @@
+<div class="modal fade" id="DataPointFilter">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content bg-dark">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-4">
+            <label>Collection</label>
+            <div class="form-group input-group">
+              <select class="form-control bg-dark text-light" id="ChartDataCaptions" (change)="collectionChange($event)">
+                <option *ngFor="let data of chartData">{{data.name}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-8">
+            <label>General</label>
+            <div class="row">
+              <div class="form-group">
+                <button class="btn btn-primary" (click)="selectAll(true, false)">Select all</button>
+                <button class="btn btn-primary ml-2" (click)="selectAll(false, false)">Deselect all</button>
+                <button *ngIf="filteredData.length<selectedData.length" class="btn btn-info ml-2"
+                  (click)="selectAll(true, true)">Select Filtered</button>
+                <button *ngIf="filteredData.length<selectedData.length" class="btn btn-info ml-2"
+                  (click)="selectAll(false, true)">Deselect Filtered</button>
+                  <button class="btn btn-danger ml-2" *ngIf="filteredData.length<selectedData.length"
+                    (click)="resetFilter()">Reset Filters</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+              <label>Filter by caption</label>
+            <input class="form-control bg-dark text-light" placeholder="Filter..." (input)="filterChange($event)" id="CaptionFilter">
+          </div>
+          <div class="col-3">
+            <label>Filter from caption</label>
+            <div class="form-group input-group">
+              <select class="form-control bg-dark text-light" (change)="filterFrom($event)">
+                <option *ngFor="let data of filteredData; let first = first;" [selected]="first">{{data.caption}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <label>Filter to caption</label>
+            <div class="form-group input-group">
+              <select class="form-control bg-dark text-light" (change)="filterTo($event)">
+                <option *ngFor="let data of filteredData; let last = last;" [selected]="last">{{data.caption}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12">
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th>Selected</th>
+                  <th>Caption</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of filteredData | slice: (page-1) * pageSize : page * pageSize"
+                  (click)="data.selected=!data.selected;confirmFilter();" style="cursor: pointer;">
+                  <td>
+                    <div class="form-check">
+                      <label class="form-check-label" for="check1">
+                        <input type="checkbox" class="form-check-input bg-dark text-light" [checked]="data.selected">
+                        &nbsp;
+                      </label>
+                    </div>
+                  </td>
+                  <td>{{data.caption}}</td>
+                  <td>{{data.value}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <ngb-pagination [(page)]="page" [pageSize]="pageSize" [collectionSize]="filteredData.length" [maxSize]="5"
+              [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

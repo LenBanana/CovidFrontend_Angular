@@ -1,46 +1,74 @@
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { AddedSource } from '../Interfaces/CovidData';
-import { Filter } from '../Interfaces/General';
+import { Filter, FilterDefine, FilterType } from '../Interfaces/General';
 
 @Component({
   selector: 'app-filter-field',
   templateUrl: './filter-field.component.html',
   styleUrls: ['./filter-field.component.scss']
 })
-export class FilterFieldComponent implements OnChanges {
+export class FilterFieldComponent implements OnInit, OnChanges {
 
   constructor() { }
   @Input() filterCaptionOptions: string[];
-  @Input() uniqueId: string;
+  @Input() currentFilter: Filter;
+  @Input() first: boolean;
+  @Input() last: boolean;
   @Input() source: AddedSource;
   @Output() filter = new EventEmitter();
+  @Output() move = new EventEmitter();
   selectedCaptionFilter: string;
   selectedFilter: string;
+  filterDefine: FilterDefine = FilterDefine.Equal;
+  filterType: FilterType = FilterType.Filter;
+  FilterType = FilterType;
 
-  ngOnChanges(): void {
+  ngOnInit(): void {
+    if (this.filterType== FilterType.Filter) {
+      this.filterDefine = FilterDefine.Sum;
+    }
     if (this.filterCaptionOptions) {      
     setTimeout(() => {
-        var selector = document.getElementById("cap-slct" + this.uniqueId) as HTMLSelectElement;
-        var length = selector.options.length;
+        var captionSelector = document.getElementById("cap-slct-" + this.currentFilter.filterId) as HTMLSelectElement;
+        var filterSelector = document.getElementById("filter-slct-" + this.currentFilter.filterId) as HTMLSelectElement;
+        var length = captionSelector.options.length;
         for (var i = length - 1; i >= 0; i--) {
-          selector.options[i] = null;
+          captionSelector.options[i] = null;
+          if (this.filterType != FilterType.Filter) {            
+            filterSelector.options[i] = null;
+          }
         }
         this.filterCaptionOptions.forEach(option => {
           var newoption = document.createElement("option");
           newoption.text = option;
-          selector.add(newoption);
+          captionSelector.add(newoption);
+          if (this.filterType != FilterType.Filter) {            
+            var newFilteroption = document.createElement("option");
+            newFilteroption.text = option;
+            filterSelector.add(newFilteroption);
+          }
         });
-        selector.value = null;
+        captionSelector.value = null;
+        filterSelector.value = null;
       }, 100);
     }
+  }  
+
+  ngOnChanges(): void {    
+    this.filterType = this.currentFilter.getType();
+    this.selectedCaptionFilter = this.currentFilter.caption;
+    this.selectedFilter = this.currentFilter.filter;
   }
-  
 
   onChangeCaptionFilter(newObj) {
     this.selectedCaptionFilter = newObj;
+    this.EmitFilter(false);
+    if (this.filterType!= FilterType.Filter) {      
+      return;
+    }
     if (this.selectedCaptionFilter) {
       var rows = JSON.parse(JSON.stringify(this.source.value));
-      var selector = document.getElementById("filter-slct" + this.uniqueId) as HTMLSelectElement;
+      var selector = document.getElementById("filter-slct-" + this.currentFilter.filterId) as HTMLSelectElement;
       var length = selector.options.length;
       for (var i = length - 1; i >= 0; i--) {
         selector.options[i] = null;
@@ -68,11 +96,41 @@ export class FilterFieldComponent implements OnChanges {
 
   onChangeFilter(newFilter) {
     this.selectedFilter = newFilter;
-    const filter: Filter = { filter: this.selectedFilter, caption: this.selectedCaptionFilter, filterId: this.uniqueId}
+    this.EmitFilter(false);
     if (this.selectedFilter === '> Reset') {
-      this.selectedFilter = null;;    
+      this.selectedFilter = null;
     }
-    this.filter.emit(filter);
+  }
+
+  setFilterDefine(define) {
+    this.currentFilter.define = FilterDefine[define.target.value as string];
+    this.EmitFilter(false);
+  }
+
+  EmitFilter(force: boolean) {
+    const filter: Filter = this.currentFilter;
+    filter.filter = this.selectedFilter;
+    filter.caption = this.selectedCaptionFilter;
+    if (!force && this.selectedFilter && this.selectedCaptionFilter && this.filterDefine > -1) {
+      this.filter.emit(filter);
+    } else if (force) {
+      this.filter.emit(filter);
+    }
+  }
+
+  Reset() {
+    this.selectedFilter = '> Reset';
+    this.EmitFilter(true);
+    this.selectedFilter = null;
+  }
+
+  Delete() {
+    this.selectedFilter = '> Delete';
+    this.EmitFilter(true);
+  }
+
+  Move(Up: boolean) {
+    this.move.emit({up: Up, id: this.currentFilter.filterId})
   }
 
 }

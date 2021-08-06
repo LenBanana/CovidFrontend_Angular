@@ -4,7 +4,7 @@
                     <input type="checkbox" 
                     class="form-check-input" 
                     [checked]="log"
-                    (change)="log=!log;draw();">Log scale
+                    (change)="log=!log;drawAll();">Log scale
                   </label>
     </div>
     <div class="ml-5">
@@ -12,7 +12,15 @@
                     <input type="checkbox" 
                     class="form-check-input" 
                     [checked]="line"
-                    (change)="line=!line;draw();">Line graph
+                    (change)="line=!line;pie=false;drawAll();">Line
+                  </label>
+    </div>
+    <div class="ml-5">
+        <label class="form-check-label">
+                    <input type="checkbox" 
+                    class="form-check-input" 
+                    [checked]="pie"
+                    (change)="pie=!pie;line=false;drawAll();">Pie
                   </label>
     </div>
     <div class="ml-5">
@@ -20,7 +28,7 @@
                     <input type="checkbox" 
                     class="form-check-input" 
                     [checked]="labels"
-                    (change)="labels=!labels;draw();">Show X labels
+                    (change)="labels=!labels;drawAll();">X labels
                   </label>
     </div>
     <div class="ml-5">
@@ -28,9 +36,47 @@
                     <input type="checkbox" 
                     class="form-check-input" 
                     [checked]="automargin"
-                    (change)="automargin=!automargin;draw();">Auto margin axis
+                    (change)="automargin=!automargin;drawAll();">Auto margin axis
                   </label>
+    </div>
+    <div class="ml-5">
+        <label class="form-check-label">
+                  <input type="checkbox" 
+                  class="form-check-input" 
+                  [checked]="showLegend"
+                  (change)="showLegend=!showLegend;drawAll();">Legend
+                </label>
+    </div>
+    <div class="ml-5">
+        <label class="form-check-label">
+                <input type="checkbox" 
+                class="form-check-input" 
+                [checked]="changeColorPerCaption"
+                (change)="changeColorPerCaption=!changeColorPerCaption;drawAll();">Color per caption
+              </label>
+    </div>
+    <div class="ml-5">
+        <label class="form-check-label">
+                <input type="checkbox" 
+                class="form-check-input" 
+                [checked]="showAverage"
+                (change)="showAverage=!showAverage;drawAll();">Average <span id="avg" style="font-weight: bold;">{{avgString}}</span>
+              </label>
+    </div>
+    <div class="ml-5">
+        <label class="form-check-label">
+                <input type="checkbox" 
+                class="form-check-input" 
+                [checked]="showAverage7"
+                (change)="showAverage7=!showAverage7;drawAll();">Average 7 <span id="avg7" style="font-weight: bold;">{{avg7String}}</span>
+              </label>
     </div>
 </div>
 <!--<plotly-plot [data]="graph.data" [layout]="graph.layout" [style]="{position: 'relative', width: '100%', height: '100%', color: '#fff'}"></plotly-plot> style="min-height: 770px;"-->
-<div id="mainPlot" style="min-height: 770px; height: 100%;"></div>
+<div *ngIf="loading===false&&error===false" id="mainPlot" style="min-height: 770px; height: 100%;"></div>
+<div *ngIf="loading===true&&error===false">
+    <p class="center"><i class="fas fa-circle-notch fa-5x spin mt-5 text-info"></i></p>
+</div>
+<div *ngIf="error===true">
+    <p class="center">Error attempting to build chart, please try again with another configuration...</p>
+</div>

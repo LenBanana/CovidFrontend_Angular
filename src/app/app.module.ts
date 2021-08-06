@@ -13,6 +13,12 @@ import { AddedSourceComponent } from './added-source/added-source.component';
 import { DynamicTableComponent } from './dynamic-table/dynamic-table.component';
 import { SourceAddModalComponent } from './source-add-modal/source-add-modal.component';
 import { FilterFieldComponent } from './filter-field/filter-field.component';
+import { CommonModule } from '@angular/common';
+import { SanitizerPipe } from './pipes/sanitizer.pipe';
+import { GoogleBasicChartComponent } from './google-basic-chart/google-basic-chart.component';
+import { GoogleChartComponent, GoogleChartsModule } from 'angular-google-charts';
+import { DatapointFilterComponent } from './datapoint-filter/datapoint-filter.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
  
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -25,14 +31,20 @@ PlotlyModule.plotlyjs = PlotlyJS;
     AddedSourceComponent,
     DynamicTableComponent,
     SourceAddModalComponent,
-    FilterFieldComponent
+    FilterFieldComponent,
+    SanitizerPipe,
+    GoogleBasicChartComponent,
+    DatapointFilterComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    PlotlyModule
+    GoogleChartsModule,
+    PlotlyModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
