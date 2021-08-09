@@ -30,7 +30,7 @@
     "popper.js": "1.14.7",
     "rxjs": "~6.5.4",
     "ts-transformer-keys": "^0.4.2",
-    "tslib": "^1.10.0",
+    "tslib": "^2.3.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

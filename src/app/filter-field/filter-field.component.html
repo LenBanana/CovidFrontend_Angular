@@ -1,6 +1,7 @@
 <div class="row mb-4 mx-1 card-body bg-secondary shadow rounded relative">
     <div class="ident text-dark">
         <span *ngIf="filterType==FilterType.Filter"><i class="fas fa-filter"></i> Filter</span>
+        <span *ngIf="filterType==FilterType.FilterRange"><i class="fas fa-filter"></i> Filter Range</span>
         <span *ngIf="filterType==FilterType.Aggregation"><i class="fas fa-bezier-curve"></i> Aggregation</span>
         <span *ngIf="filterType==FilterType.Calculation"><i class="fas fa-divide"></i> Calculation</span>
     </div>
@@ -16,6 +17,8 @@
         <select id="define-{{currentFilter.filterId}}" class="form-control bg-dark text-light shadow" (change)="setFilterDefine($event)">
             <option selected *ngIf="filterType==FilterType.Filter">Equal</option>
             <option *ngIf="filterType==FilterType.Filter">Unequal</option>
+            <option *ngIf="filterType==FilterType.FilterRange">From</option>
+            <option *ngIf="filterType==FilterType.FilterRange">To</option>
             <option selected *ngIf="filterType==FilterType.Aggregation">Sum</option>
             <option *ngIf="filterType==FilterType.Aggregation">Average</option>
             <option selected *ngIf="filterType==FilterType.Calculation">Plus</option>
@@ -26,11 +29,13 @@
     </div>
     <div class="col-4">
         <p class="text-light">
-            <span *ngIf="filterType==FilterType.Filter">Value</span>
-            <span *ngIf="filterType!=FilterType.Filter">Column</span>
+            <span *ngIf="filterType==FilterType.Filter||filterType==FilterType.FilterRange">Value</span>
+            <span *ngIf="filterType!=FilterType.Filter&&filterType!=FilterType.FilterRange">Column</span>
         </p>
-        <select id="filter-slct-{{currentFilter.filterId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedFilter" (ngModelChange)="onChangeFilter($event)"> 
+        <select *ngIf="!CustomValue" id="filter-slct-{{currentFilter.filterId}}" class="form-control bg-dark text-light shadow" [ngModel]="selectedFilter" (ngModelChange)="onChangeFilter($event)"> 
+            <option *ngIf="filterType==FilterType.Calculation">Custom</option>
         </select>
+        <input type="number" *ngIf="CustomValue" class="form-control bg-dark text-light shadow" [(ngModel)]="customFilter" (keyup.enter)="onChangeFilter(customFilter)">
         <div class="mt-2 float-right">
             <button class="btn btn-warning mr-2" (click)="Reset()" [disabled]="!selectedCaptionFilter||!selectedFilter">Reset</button>
             <button class="btn btn-danger" (click)="Delete()">Remove</button>

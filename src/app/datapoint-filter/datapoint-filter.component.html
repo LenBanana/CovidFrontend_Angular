@@ -1,6 +1,11 @@
 <div class="modal fade" id="DataPointFilter">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content bg-dark">
+    <div class="modal-content bg-dark">      
+      <div class="modal-header">
+        <h5 class="modal-title">Filter Settings</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
       <div class="modal-body">
         <div class="row">
           <div class="col-4">
@@ -34,7 +39,7 @@
             <label>Filter from caption</label>
             <div class="form-group input-group">
               <select class="form-control bg-dark text-light" (change)="filterFrom($event)">
-                <option *ngFor="let data of filteredData; let first = first;" [selected]="first">{{data.caption}}</option>
+                <option *ngFor="let data of sortedByCap(filteredData); let first = first;" [selected]="first">{{data.caption}}</option>
               </select>
             </div>
           </div>
@@ -42,7 +47,7 @@
             <label>Filter to caption</label>
             <div class="form-group input-group">
               <select class="form-control bg-dark text-light" (change)="filterTo($event)">
-                <option *ngFor="let data of filteredData; let last = last;" [selected]="last">{{data.caption}}</option>
+                <option *ngFor="let data of sortedByCap(filteredData); let last = last;" [selected]="last">{{data.caption}}</option>
               </select>
             </div>
           </div>
@@ -50,9 +55,9 @@
             <table class="table table-dark table-striped">
               <thead>
                 <tr>
-                  <th>Selected</th>
-                  <th>Caption</th>
-                  <th>Value</th>
+                  <th (click)="sortFunction('selected', 0)" style="cursor: pointer;">Selected <i class="fas" [class.fa-sort-up]="!tableSort[0]" [class.fa-sort-down]="tableSort[0]"></i></th>
+                  <th (click)="sortFunction('caption', 1)" style="cursor: pointer;">Caption <i class="fas" [class.fa-sort-up]="!tableSort[1]" [class.fa-sort-down]="tableSort[1]"></i></th>
+                  <th (click)="sortFunction('value', 2)" style="cursor: pointer;">Value <i class="fas" [class.fa-sort-up]="!tableSort[2]" [class.fa-sort-down]="tableSort[2]"></i></th>
                 </tr>
               </thead>
               <tbody>

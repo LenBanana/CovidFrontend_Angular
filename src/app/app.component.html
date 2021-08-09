@@ -16,7 +16,7 @@
         <div class="card-header">
           <h4>{{currentTitle}}</h4>
         </div>
-        <div class="card-body" style="height: 75vh;">
+        <div class="card-body" style="height: 75vh; min-height: 500px;">
           <!--<app-basic-plot [dataPoints]="[data.dataPoints]" style="display: none;"></app-basic-plot>-->
           <div class="row">
             <div class="col-1">
@@ -36,7 +36,7 @@
                   <option *ngFor="let data of dataPoints; let first=first;" [attr.selected]="first">{{data.name}}</option>
                 </select>
                 <div class="input-group-append">
-                    <button class="btn btn-danger" (click)="RemoveChartData()"><i class="fas fa-ban"></i></button>
+                    <button class="btn btn-danger" (click)="RemoveChartData()"><i class="fas fa-trash"></i></button>
                 </div>
               </div>
             </div>
@@ -57,9 +57,19 @@
                 </select>
               </div>
             </div>
+
+            <div class="col-1">
+                <div class="form-group">
+                    <label>Log Scale</label>
+                    <br>
+                <button type="button" class="btn btn-dark" style="cursor: pointer; z-index: 10;" (click)="LogScale=!LogScale">
+                    <i class="fas fa-balance-scale" [class.text-success]="LogScale" [class.text-danger]="!LogScale"></i>
+                  </button>
+                </div>
+            </div>
           </div>
-          <app-datapoint-filter [chartData]="filteredDataPoints" (filterData)="filterData($event)"></app-datapoint-filter>
-          <app-google-basic-chart [chartData]="filteredDataPoints" [chartType]="chartType" [UniqueId]="UniqueId"></app-google-basic-chart>
+          <app-datapoint-filter [chartData]="filteredDataPoints" (filterData)="filterData()"></app-datapoint-filter>
+          <app-google-basic-chart [chartData]="filteredDataPoints" [chartType]="chartType" [UniqueId]="UniqueId" [LogScale]="LogScale"></app-google-basic-chart>
         </div>
       </div>
       <div *ngIf="data" class="pl-5 mt-2 py-3 bg-dark text-light shadow">

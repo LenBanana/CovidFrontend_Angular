@@ -26,9 +26,12 @@ export class GoogleBasicChartComponent implements OnInit, OnChanges, DoCheck {
   @Input() chartData: ChartData[];
   @Input() chartType = "AreaChart";
   @Input() UniqueId = 0;
+  @Input() LogScale = false;
   iterableDiffer: IterableDiffer < ChartData > ;
   googleChartData: any[][];
   googleChartColumns: any[];
+  selectedDataPoints = [];
+
   colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'];
   chartOptions = {
     hAxis: {
@@ -41,6 +44,7 @@ export class GoogleBasicChartComponent implements OnInit, OnChanges, DoCheck {
       formatType: "short"
     },
     vAxis: {
+      scaleType: 'standard',
       textStyle: {
         color: '#FFF'
       }
@@ -53,7 +57,9 @@ export class GoogleBasicChartComponent implements OnInit, OnChanges, DoCheck {
     legend: {
       "textStyle": {
         color: '#FFF'
-      }
+      },
+      position: 'top', 
+      alignment: 'start'
     }
   };
 
@@ -74,7 +80,22 @@ export class GoogleBasicChartComponent implements OnInit, OnChanges, DoCheck {
   }
 
   ngOnChanges() {
+    this.LogScale ? this.chartOptions.vAxis.scaleType = 'log' : this.chartOptions.vAxis.scaleType = 'standard'
     this.Draw();
+  }
+
+  chartValueSelected(event) {
+    this.selectedDataPoints = [];
+    this.chartData.forEach(x => { 
+      var i = x.points.findIndex(x => x.caption == this.chartData[event.selection[0].column-1].points[event.selection[0].row].caption); 
+      if (i > -1) {
+        this.selectedDataPoints.push({name: x.name, point: x.points[i]});
+      }
+    });
+  }
+
+  sortedByCap(array) {
+    return Array.prototype.slice.call(array).sort((a, b) => a.caption > b.caption ? 1 : a.caption < b.caption ? -1 : 0);
   }
 
   Draw() {
@@ -86,12 +107,13 @@ export class GoogleBasicChartComponent implements OnInit, OnChanges, DoCheck {
       if (chart.points.some(x => x.value != null)) {
         columns.push(chart.name);
         i++;
-        chart.points.filter(x => x.selected).forEach(dataPoint => {
+        this.sortedByCap(chart.points).filter(x => x.selected).forEach((dataPoint: DataPointFilter) => {
           var caption = dataPoint.caption as any;
           var dateParse = Date.parse(caption);
           var isDate = !isNaN(dateParse);
           if (isDate) {
             caption = new Date(dateParse);
+            caption.setHours(0,0,0,0);
           }
           var capIdx = chartdata.findIndex(x => x[0] == caption || (isDate && x[0].v.getTime() == caption.getTime()));
           if (capIdx > -1) {

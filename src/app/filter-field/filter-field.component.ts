@@ -19,9 +19,11 @@ export class FilterFieldComponent implements OnInit, OnChanges {
   @Output() move = new EventEmitter();
   selectedCaptionFilter: string;
   selectedFilter: string;
+  customFilter: number;
   filterDefine: FilterDefine = FilterDefine.Equal;
   filterType: FilterType = FilterType.Filter;
   FilterType = FilterType;
+  CustomValue = false;
 
   ngOnInit(): void {
     if (this.filterType== FilterType.Filter) {
@@ -34,7 +36,7 @@ export class FilterFieldComponent implements OnInit, OnChanges {
         var length = captionSelector.options.length;
         for (var i = length - 1; i >= 0; i--) {
           captionSelector.options[i] = null;
-          if (this.filterType != FilterType.Filter) {            
+          if (this.filterType != FilterType.Filter&&this.filterType != FilterType.FilterRange) {            
             filterSelector.options[i] = null;
           }
         }
@@ -42,7 +44,7 @@ export class FilterFieldComponent implements OnInit, OnChanges {
           var newoption = document.createElement("option");
           newoption.text = option;
           captionSelector.add(newoption);
-          if (this.filterType != FilterType.Filter) {            
+          if (this.filterType != FilterType.Filter&&this.filterType != FilterType.FilterRange) {            
             var newFilteroption = document.createElement("option");
             newFilteroption.text = option;
             filterSelector.add(newFilteroption);
@@ -63,7 +65,7 @@ export class FilterFieldComponent implements OnInit, OnChanges {
   onChangeCaptionFilter(newObj) {
     this.selectedCaptionFilter = newObj;
     this.EmitFilter(false);
-    if (this.filterType!= FilterType.Filter) {      
+    if (this.filterType!= FilterType.Filter&&this.filterType!=FilterType.FilterRange) {      
       return;
     }
     if (this.selectedCaptionFilter) {
@@ -95,11 +97,21 @@ export class FilterFieldComponent implements OnInit, OnChanges {
   }
 
   onChangeFilter(newFilter) {
+    newFilter = newFilter.toString();
+    if (!newFilter) {
+      return;
+    }
+    if (newFilter === '> Reset') {
+      this.selectedFilter = null;
+      return;
+    }
+    if (newFilter=== 'Custom') {
+      this.CustomValue = !this.CustomValue
+      this.selectedFilter = null;
+      return;
+    }
     this.selectedFilter = newFilter;
     this.EmitFilter(false);
-    if (this.selectedFilter === '> Reset') {
-      this.selectedFilter = null;
-    }
   }
 
   setFilterDefine(define) {

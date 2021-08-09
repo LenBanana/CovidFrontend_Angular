@@ -1,6 +1,21 @@
-import { Component, DoCheck, EventEmitter, Input, IterableDiffer, IterableDiffers, OnChanges, OnInit, Output } from '@angular/core';
-import { DataPoint, DataPointFilter } from '../Interfaces/CovidData';
-import { ChartData } from '../Interfaces/General';
+import {
+  Component,
+  DoCheck,
+  EventEmitter,
+  Input,
+  IterableDiffer,
+  IterableDiffers,
+  OnChanges,
+  OnInit,
+  Output
+} from '@angular/core';
+import {
+  DataPoint,
+  DataPointFilter
+} from '../Interfaces/CovidData';
+import {
+  ChartData
+} from '../Interfaces/General';
 declare var $: any;
 
 @Component({
@@ -11,20 +26,20 @@ declare var $: any;
 export class DatapointFilterComponent implements OnInit, DoCheck {
 
   @Input() chartData: ChartData[];
-  @Output() filterData = new EventEmitter(); 
+  @Output() filterData = new EventEmitter();
   page = 1;
   pageSize = 10;
   selection = "";
   selectedData: DataPointFilter[] = [];
   filteredData: DataPointFilter[] = [];
-  iterableDiffer:IterableDiffer<ChartData>;
+  iterableDiffer: IterableDiffer < ChartData > ;
+  tableSort = [true, true, true];
 
   constructor(private iterableDiffers: IterableDiffers) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
-   }
-
-  ngOnInit(): void {
   }
+
+  ngOnInit(): void {}
 
   ngDoCheck() {
     if (!this.chartData) {
@@ -34,7 +49,7 @@ export class DatapointFilterComponent implements OnInit, DoCheck {
     if (changes) {
       if (this.chartData && this.chartData.length > 0) {
         this.selection = this.chartData[0].name;
-        this.chartData.length > 0 ? this.selectedData = this.chartData[0].points: this.selectedData = [];
+        this.chartData.length > 0 ? this.selectedData = this.chartData[0].points : this.selectedData = [];
         this.filteredData = this.selectedData;
       }
     }
@@ -45,16 +60,16 @@ export class DatapointFilterComponent implements OnInit, DoCheck {
     if (idx > -1) {
       this.selection = chartName.target.value;
       this.selectedData = this.chartData[idx].points;
-      this.filteredData = this.selectedData;      
-      $('#CaptionFilter').val(''); 
+      this.filteredData = this.selectedData;
+      $('#CaptionFilter').val('');
     }
   }
 
   selectAll(select: boolean, onlyFiltered: boolean) {
-    if (onlyFiltered) {      
+    if (onlyFiltered) {
       if (select) {
         this.filteredData.forEach(x => x.selected = true);
-      } else {      
+      } else {
         this.filteredData.forEach(x => x.selected = false);
       }
       this.filteredData.forEach(x => this.selectedData.find(y => y.caption == x.caption).selected = x.selected);
@@ -62,7 +77,7 @@ export class DatapointFilterComponent implements OnInit, DoCheck {
       if (select) {
         this.selectedData.forEach(x => x.selected = true);
         this.filteredData.forEach(x => x.selected = true);
-      } else {      
+      } else {
         this.selectedData.forEach(x => x.selected = false);
         this.filteredData.forEach(x => x.selected = false);
       }
@@ -73,19 +88,19 @@ export class DatapointFilterComponent implements OnInit, DoCheck {
   filterChange(filter) {
     var lowerFilter: string = filter.target.value.toLocaleLowerCase();
     if (lowerFilter.length > 0) {
-      this.filteredData = this.selectedData.filter(x => x.caption.toLocaleLowerCase().includes(lowerFilter));
+      this.filteredData = this.selectedData.filter(x => x.caption.toLocaleLowerCase().includes(lowerFilter) || x.value.toString().toLocaleLowerCase().includes(lowerFilter));
     } else {
       this.filteredData = this.selectedData;
     }
   }
-  
+
   filterFrom(fromCaption) {
     var idx = this.filteredData.findIndex(x => x.caption == fromCaption.target.value);
     if (idx > -1) {
       this.filteredData = this.filteredData.slice(idx)
     }
   }
-  
+
   filterTo(toCaption) {
     var idx = this.filteredData.findIndex(x => x.caption == toCaption.target.value);
     if (idx > -1) {
@@ -95,12 +110,24 @@ export class DatapointFilterComponent implements OnInit, DoCheck {
 
   resetFilter() {
     this.filteredData = this.selectedData;
-    $('#CaptionFilter').val(''); 
+    $('#CaptionFilter').val('');
   }
 
   confirmFilter() {
-    var filterData: ChartData = {name: this.selection, points: this.selectedData.filter(x => x.selected == true)};
-    this.filterData.emit(filterData);
+    this.filterData.emit();
+  }
+
+  sortFunction(colName, sortIdx) {
+    if (this.tableSort[sortIdx] == true) {
+      this.filteredData.sort((a, b) => a[colName] < b[colName] ? 1 : a[colName] > b[colName] ? -1 : 0);
+    } else {
+      this.filteredData.sort((a, b) => a[colName] > b[colName] ? 1 : a[colName] < b[colName] ? -1 : 0);
+    }
+    this.tableSort[sortIdx] = !this.tableSort[sortIdx];
+  }
+
+  sortedByCap(array) {
+    return Array.prototype.slice.call(array).sort((a, b) => a.caption > b.caption ? 1 : a.caption < b.caption ? -1 : 0);
   }
 
 }

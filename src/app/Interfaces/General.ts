@@ -1,4 +1,7 @@
-import { DataPoint, DataPointFilter } from "./CovidData";
+import {
+  DataPoint,
+  DataPointFilter
+} from "./CovidData";
 
 export class Filter {
   filterId: string;
@@ -11,6 +14,10 @@ export class Filter {
         return FilterType.Filter;
       case FilterDefine.Unequal:
         return FilterType.Filter;
+      case FilterDefine.From:
+        return FilterType.FilterRange;
+      case FilterDefine.To:
+        return FilterType.FilterRange;
       case FilterDefine.Sum:
         return FilterType.Aggregation;
       case FilterDefine.Average:
@@ -29,11 +36,12 @@ export class Filter {
 
 export interface ChartData {
   name: string,
-  points: DataPointFilter[]
+    points: DataPointFilter[]
 }
 
 export enum FilterType {
   Filter,
+  FilterRange,
   Aggregation,
   Calculation
 }
@@ -46,5 +54,7 @@ export enum FilterDefine {
   Plus,
   Minus,
   Times,
-  Divided
+  Divided,
+  From,
+  To
 }

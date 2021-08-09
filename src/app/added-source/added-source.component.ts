@@ -95,7 +95,7 @@ export class AddedSourceComponent implements OnChanges {
     }
 
     for (let j in sourceRows) {
-      if (!filterOptions.includes(j)) {        
+      if (!filterOptions.includes(j)) {
         let filter = document.createElement("option");
         filter.text = j;
         filterOptions.push(j);
@@ -145,6 +145,9 @@ export class AddedSourceComponent implements OnChanges {
       case 2:
         filter.define = FilterDefine.Plus;
         break;
+      case 3:
+        filter.define = FilterDefine.From
+        break;
     }
     this.allFilter.push(filter);
   }
@@ -191,6 +194,16 @@ export class AddedSourceComponent implements OnChanges {
       let count = 0;
       this.allFilter.filter(x => x.filter && x.filter.length > 0).forEach(filt => {
         const type: FilterType = filt.getType();
+        if (type == FilterType.FilterRange) {
+          var idx = values.findIndex(x => x[filt.caption] == filt.filter);
+          if (idx > -1) {
+            if (filt.define == FilterDefine.From) {
+              values = values.slice(idx);
+            } else if (filt.define == FilterDefine.To) {
+              values = values.slice(0, idx);
+            }
+          }
+        }
         if (type == FilterType.Filter) {
           values = values.filter(x => filt.define == FilterDefine.Equal ? x[filt.caption] == filt.filter : x[filt.caption] != filt.filter);
         } else if (type == FilterType.Aggregation) {
@@ -203,50 +216,57 @@ export class AddedSourceComponent implements OnChanges {
               keyString = date.toISOString();
               if (!res[keyString]) {
                 count++;
+                res[keyString] = {};
+                const Id = filt.caption;
+                const qty = filt.filter;
                 res[keyString] = {
-                  Id: keyString,
-                  qty: 0
-                };
+                  ...res[keyString],
+                  [Id]: keyString,
+                  [qty]: 0
+                }
                 result.push(res[keyString])
               }
             } else {
               if (!res[keyString]) {
                 count++;
+                res[keyString] = {};
+                const Id = filt.caption;
+                const qty = filt.filter;
                 res[keyString] = {
-                  Id: keyString,
-                  qty: 0
-                };
+                  ...res[keyString],
+                  [Id]: keyString,
+                  [qty]: 0
+                }
                 result.push(res[keyString])
               }
             }
             if (value[filt.filter]) {
               const val = Number.parseFloat(value[filt.filter]);
-              res[keyString].qty += val ? val : 0;
+              res[keyString][filt.filter] += val ? val : 0;
             }
             return res;
           }, {});
           if (filt.define == FilterDefine.Average) {
             result.forEach(res => {
-              res.qty = res.qty / (values.length / count);
+              res[filt.filter] = res[filt.filter] / (values.length / count);
             });
           }
           values = result;
         } else if (type == FilterType.Calculation) {
-
           values.forEach(val => {
             switch (filt.define) {
               case FilterDefine.Plus:
-                val[filt.caption + "+" + filt.filter] = Number.parseFloat(val[filt.caption]) + Number.parseFloat(val[filt.filter]);
-              break;
+                val[filt.caption + "+" + filt.filter] = Number.parseFloat(val[filt.caption]) + (val[filt.filter] ? Number.parseFloat(val[filt.filter]) : Number.parseFloat(filt.filter));
+                break;
               case FilterDefine.Minus:
-                val[filt.caption + "-" + filt.filter] = Number.parseFloat(val[filt.caption]) - Number.parseFloat(val[filt.filter]);
-              break;
+                val[filt.caption + "-" + filt.filter] = Number.parseFloat(val[filt.caption]) - (val[filt.filter] ? Number.parseFloat(val[filt.filter]) : Number.parseFloat(filt.filter));
+                break;
               case FilterDefine.Times:
-                val[filt.caption + "*" + filt.filter] = Number.parseFloat(val[filt.caption]) * Number.parseFloat(val[filt.filter]);
-              break;
+                val[filt.caption + "*" + filt.filter] = Number.parseFloat(val[filt.caption]) * (val[filt.filter] ? Number.parseFloat(val[filt.filter]) : Number.parseFloat(filt.filter));
+                break;
               case FilterDefine.Divided:
-                val[filt.caption + "/" + filt.filter] = Number.parseFloat(val[filt.caption]) / Number.parseFloat(val[filt.filter]);
-              break;
+                val[filt.caption + "/" + filt.filter] = Number.parseFloat(val[filt.caption]) / (val[filt.filter] ? Number.parseFloat(val[filt.filter]) : Number.parseFloat(filt.filter));
+                break;
             }
           });
         }
@@ -263,12 +283,20 @@ export class AddedSourceComponent implements OnChanges {
 
   emitSource() {
     if (this.selectedValue && this.selectedCaption) {
-      let newSources: ChartData = { name: this.selectedCaption + "_" + this.selectedValue, points: []};      
+      let newSources: ChartData = {
+        name: this.selectedValue,
+        points: []
+      };
       let rows = JSON.parse(JSON.stringify(this.filteredSource.value));
       for (let i = 0; i < rows.length; i++) {
+        var cap = rows[i][this.selectedCaption];
+        var val = rows[i][this.selectedValue];
+        if (!isNaN(val)) {
+          val = Number.parseFloat(val);
+        }
         newSources.points.push({
-          caption: rows[i][this.selectedCaption],
-          value: rows[i][this.selectedValue],
+          caption: cap,
+          value: val,
           selected: true
         });
       }
@@ -281,13 +309,22 @@ export class AddedSourceComponent implements OnChanges {
           return 0;
         }
       });
-      var captions = $.unique(newSources.points.map(function(value){return value.caption}));
+      var captions = $.unique(newSources.points.map(function (value) {
+        return value.caption
+      }));
       var summedValues: DataPointFilter[] = [];
       captions.forEach(cap => {
         var total = newSources.points.filter(x => x.caption == cap).reduce((sum, current) => sum + current.value, 0);
-        summedValues.push({caption: cap, value: total, selected: true});
+        summedValues.push({
+          caption: cap,
+          value: total,
+          selected: true
+        });
       });
-      newSources.points = summedValues;      
+      setTimeout(() => {        
+        this.selectedValue = "";
+      }, 1000);
+      newSources.points = summedValues;
       this.newSource.emit(newSources);
     }
   }
